@@ -4,10 +4,9 @@ subtitle: "PSYC 201A, Data Simulation Lab 1"
 author: "James Ashby"
 date: today
 format:
-  html:
+  pdf:
     toc: true
     toc-depth: 2
-    embed-resources: true
 execute:
   warning: false
   message: false
@@ -126,7 +125,7 @@ Tasks:
 # TODO: create a simulated dataframe using rbinom (remember, you can look at the help for the function)
 # Hint: Use tibble() and rbinom(n=200, size=1, prob=0.92)
 # Complete this line:
-acc_df <- tibble(acc = rbinom(___, size = ___, prob = ___))
+acc_df <- tibble(acc = rbinom(200, size = 1, prob = 0.92))
 
 
 # TODO: summarise and count
