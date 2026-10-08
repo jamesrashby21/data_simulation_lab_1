@@ -1,7 +1,7 @@
 ---
 title: "Simulations & Tidyverse lab: Intermediate Version"
 subtitle: "PSYC 201A, Data Simulation Lab 1"
-author: "Your name here"
+author: "James Ashby"
 date: today
 format:
   html:
@@ -50,8 +50,8 @@ The `rnorm` function is used below here.
 
 # you can play around with these
 n <- 300 # number of datapoints
-mu <- 0 # mean of the distribution
-sd_norm <- 1 # sd of the distribution
+mu <- 20 # mean of the distribution
+sd_norm <- 5 # sd of the distribution
 
 # rnorm is your simulation function here
 # take a look at how it's used by typing `?rnorm` in the Console
@@ -74,8 +74,8 @@ Calculate some basic summaries of this dataframe and print them out
 
 norm_df_summary <- norm_df |> 
   summarise(
-    mean = mean(___),  # Fill in the column name
-    sd = sd(___),      # Fill in the column name  
+    mean = mean(sim_values),  # Fill in the column name
+    sd = sd(sim_values),      # Fill in the column name  
     n = n()            # This one is already done!
   )
 
@@ -100,6 +100,8 @@ ggplot(norm_df, aes(x=sim_values)) +
 **Exercise:** change `mu` and `sd_norm` to two other combos (e.g., 10 & 2; 10 & 5).
 
 Write one sentence with an inline mean (e.g., `r round(mean(norm_df$sim_values), 2)`).
+
+The mean of my simulated data set was: `r round(mean(norm_df$sim_values), 2)` .
 
 **Bonus:** Compute another kind of summary statistic on the dataset.
 
