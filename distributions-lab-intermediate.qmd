@@ -320,8 +320,8 @@ Add a **condition** factor. Suppose invalid cues slow responses by \~**40 ms** o
 
 # Complete this structure:
 rt_df_valid_invalid <- tibble(
-  rt_valid = r_shifted_lognorm(___, t0 = ___, meanlog = ___, sdlog = ___),     # Fill in parameters for valid condition
-  rt_invalid = r_shifted_lognorm(___, t0 = ___, meanlog = ___, sdlog = ___)   # Fill in parameters for invalid condition (slower)
+  rt_valid = r_shifted_lognorm(500, t0 = 300, meanlog = log(250), sdlog = 0.35),     # Fill in parameters for valid condition
+  rt_invalid = r_shifted_lognorm(500, t0 = 300, meanlog = log(290), sdlog = 0.35)   # Fill in parameters for invalid condition (slower)
 )
 
 # Check the first few rows
@@ -336,9 +336,9 @@ Use `pivot_longer` to make this a long dataframe, where `rt` is just one column,
 # Complete this structure:
 rt_df_valid_invalid_longer <- rt_df_valid_invalid |>
   pivot_longer(
-    cols = c(___, ___),        # Fill in the column names to pivot
-    values_to = ___,           # Fill in the name for the values column
-    names_to = ___             # Fill in the name for the names column
+    cols = c(rt_valid, rt_invalid),        # Fill in the column names to pivot
+    values_to = "rt",           # Fill in the name for the values column
+    names_to = "condition"             # Fill in the name for the names column
   )
 
 # Check the first few rows
@@ -353,10 +353,10 @@ Now, use `group_by(condition)` before computing your summaries in tidyverse -- y
 # Hint: Use group_by(condition) then summarise()
 # Complete this structure:
 valid_invalid_summary <- rt_df_valid_invalid_longer |>
-  group_by(___) |>  # Fill in the grouping variable
+  group_by(condition) |>  # Fill in the grouping variable
   summarise(
-    mean_rt = mean(___),  # Fill in column name
-    sd_rt = sd(___),      # Fill in column name
+    mean_rt = mean(rt),  # Fill in column name
+    sd_rt = sd(rt),      # Fill in column name
     n = n()
   )
 
@@ -370,8 +370,8 @@ Now, make some sort of visual of the two distributions. Give the raw dataframe t
 ## TODO: Use ggplot to make density plot of simulated data
 # Hint: Use geom_density() with fill=condition in aes()
 # Complete this structure:
-ggplot(___, aes(x = ___, fill = ___)) +  # Fill in dataframe and column names
-  geom_density(alpha = ___) +            # Fill in alpha value (0-1)
+ggplot(rt_df_valid_invalid_longer, aes(x = rt, fill = condition)) +  # Fill in dataframe and column names
+  geom_density(alpha = 0.5) +            # Fill in alpha value (0-1)
   labs(title = "Cueing Cost as Shift in Distribution", x = "RT (ms)", y = "Density")
 ```
 
@@ -397,12 +397,12 @@ for (i in 1:num_participants) {
   
   # Simulate trials for this participant
   sim_subj <- tibble(
-    participant = ___,
-    condition = rep(c("valid", "invalid"), each = ___),
-    trial = rep(1:___, times = 2),
+    participant = i,
+    condition = rep(c("valid", "invalid"), each = num_trials_per_condition),
+    trial = rep(1:num_trials_per_condition, times = 2),
     rt = c(
-      r_shifted_lognorm(___, t0 = 300 + baseline_shift, meanlog = log(250), sdlog = 0.35),
-      r_shifted_lognorm(___, t0 = 300 + baseline_shift, meanlog = log(290), sdlog = 0.35)
+      r_shifted_lognorm(num_trials_per_condition, t0 = 300 + baseline_shift, meanlog = log(250), sdlog = 0.35),
+      r_shifted_lognorm(num_trials_per_condition, t0 = 300 + baseline_shift, meanlog = log(290), sdlog = 0.35)
     )
   ) |>
     mutate(log_rt = log(rt))
@@ -420,9 +420,9 @@ head(df_experiment)
 # Hint: Use group_by(participant, condition) and summarise()
 # Complete this structure:
 df_experiment_summary <- df_experiment |>
-  group_by(___, ___) |>  # Fill in grouping variables
+  group_by(participant, condition) |>  # Fill in grouping variables
   summarise(
-    mean_rt = mean(___),  # Fill in column name
+    mean_rt = mean(rt),  # Fill in column name
     n_trials = n(),
     .groups = "drop"
   )
@@ -437,9 +437,9 @@ BONUS: Plot average RTs and 95 CIs over individual subjects. You can reuse `stat
 # TODO: Plot average RTs and 95 CIs over individual subjects
 # Hint: Use stat_summary() for means and CIs, geom_point() for individual data
 # Complete this structure:
-ggplot(___, aes(x = ___, y = ___, color = ___, fill = ___)) +  # Fill in dataframe and aesthetics
+ggplot(df_experiment_summary, aes(x = condition, y = mean_rt, color = condition, fill = condition)) +  # Fill in dataframe and aesthetics
   geom_point(alpha = 0.6) +  # Individual subject means
-  geom_line(aes(group = ___), alpha = 0.3, color = 'grey') +  # Connect data from each participant
+  geom_line(aes(group = participant), alpha = 0.3, color = 'grey') +  # Connect data from each participant
   stat_summary(fun = mean, geom = "point", size = 3) +  # Overall mean
   stat_summary(fun.data = mean_se, fun.args = list(mult = 1.96), geom = "errorbar", width = 0.1) +  # 95% CIs
   labs(x = "Condition", y = "Average RT", title = "RT by Simulated Cueing Condition")
