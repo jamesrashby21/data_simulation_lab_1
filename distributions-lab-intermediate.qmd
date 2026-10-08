@@ -260,9 +260,9 @@ r_shifted_lognorm <- function(n, t0, meanlog, sdlog) {
 
 # Complete this structure:
 rt_df <- tibble(
-  rt = r_shifted_lognorm(___, t0 = ___, meanlog = ___, sdlog = ___)  # Fill in the parameters
+  rt = r_shifted_lognorm(500, t0 = 300, meanlog = log(250), sdlog = 0.35)  # Fill in the parameters
 ) |>
-  mutate(log_rt = log(___))  # Fill in the column name
+  mutate(log_rt = log(rt))  # Fill in the column name
 
 # Check the first few rows
 head(rt_df)
@@ -273,7 +273,7 @@ Now look at their relationship -- use `ggplot()` with `geom_point()`, putting `r
 ```{r}
 # TODO: Plot rt vs log_rt
 # Hint: ggplot() with geom_point()
-ggplot(rt_df, aes(x = ___, y = ___)) +  # Fill in x and y column names
+ggplot(rt_df, aes(x = rt, y = log_rt)) +  # Fill in x and y column names
   geom_point(alpha = 0.5) +
   labs(x = "RT (ms)", y = "Log RT")
 ```
@@ -282,7 +282,7 @@ Now plot a histogram of `rt`, and another of `log_rt`. Which one looks more like
 
 ```{r}
 # Complete this structure:
-ggplot(rt_df, aes(x = ___)) +  # first rt, then copy the chunk and use log_rt
+ggplot(rt_df, aes(x = rt)) +  # first rt, then copy the chunk and use log_rt
   geom_histogram(bins = 40) +
   labs(x = "RT (ms)", y = "Count")
 ```
@@ -295,10 +295,10 @@ OK, now let's make some summaries. Use the summarize function to calculate the m
 # Complete this structure:
 rt_df_summary <- rt_df |>
   summarise(
-    mean_rt = mean(___),    # Fill in column name
-    median_rt = median(___), # Fill in column name
-    max_rt = max(___),      # Fill in column name
-    sd_rt = sd(___)         # Fill in column name
+    mean_rt = mean(rt),    # Fill in column name
+    median_rt = median(rt), # Fill in column name
+    max_rt = max(rt),      # Fill in column name
+    sd_rt = sd(rt)         # Fill in column name
   )
 
 # Print the results
