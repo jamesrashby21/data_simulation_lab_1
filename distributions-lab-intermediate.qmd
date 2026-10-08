@@ -50,7 +50,7 @@ The `rnorm` function is used below here.
 # you can play around with these
 n <- 300 # number of datapoints
 mu <- 20 # mean of the distribution
-sd_norm <- 5 # sd of the distribution
+sd_norm <- 2 # sd of the distribution
 
 # rnorm is your simulation function here
 # take a look at how it's used by typing `?rnorm` in the Console
@@ -133,7 +133,7 @@ acc_df <- tibble(acc = rbinom(200, size = 1, prob = 0.92))
 # Complete this structure:
 acc_df_summary <- acc_df |>
   summarise(
-    prop_correct = mean(___),  # Fill in the column name
+    prop_correct = mean(acc),  # Fill in the column name
     n = n()                    # This one is already done!
   )
 
@@ -141,15 +141,15 @@ acc_df_summary <- acc_df |>
 print(acc_df_summary)
 
 # Count table: how many 0s and 1s?
-acc_df |> count(___)
+acc_df |> count(acc)
 ```
 
 ```{r}
 ## TO DO: Make a histogram of these values
 # Hint: Use ggplot() with geom_histogram()
 # Complete this structure:
-ggplot(___, aes(x = ___)) +  # Fill in dataframe and column name
-  geom_histogram(binwidth = ___, alpha = ___) +  # Choose appropriate values
+ggplot(acc_df, aes(x = acc)) +  # Fill in dataframe and column name
+  geom_histogram(binwidth = 0.5, alpha = 0.85) +  # Choose appropriate values
   labs(title = "Simulated accuracy values", x = "Accuracy", y = "Count")
 ```
 
@@ -163,7 +163,7 @@ ggplot(___, aes(x = ___)) +  # Fill in dataframe and column name
 # You have to give stat_summary an x-value, but since there isn't really one here you can just give it a label (e.g., "overall")
 
 # Complete this structure:
-ggplot(acc_df, aes(x = 'Overall', y = ___)) +  # Fill in the column name
+ggplot(acc_df, aes(x = 'Overall', y = acc)) +  # Fill in the column name
   stat_summary(fun = mean, geom = "point", size = 3) +
   stat_summary(fun.data = mean_se, fun.args = list(mult = 1.96), geom = "errorbar", width = 0.1) +
   labs(x = NULL, y = "Proportion correct", title = "Accuracy")
@@ -187,11 +187,11 @@ Tasks:
 
 # Complete this structure:
 acc2 <- tibble(
-  condition = rep(c("easy", "hard"), each = ___),  # Fill in number of trials per condition
-  block = rep(rep(1:4, each = ___), times = 2),   # Fill in trials per block
+  condition = rep(c("easy", "hard"), each = 100),  # Fill in number of trials per condition
+  block = rep(rep(1:4, each = 25), times = 2),   # Fill in trials per block
   acc = c(
-    rbinom(___, 1, 0.97),  # Fill in number of trials for easy condition
-    rbinom(___, 1, 0.87)   # Fill in number of trials for hard condition
+    rbinom(100, 1, 0.97),  # Fill in number of trials for easy condition
+    rbinom(100, 1, 0.87)   # Fill in number of trials for hard condition
   )
 )
 
@@ -204,9 +204,9 @@ acc2 |>
 # Hint: Use group_by() and summarise()
 # Complete this structure:
 acc_by_cb <- acc2 |>
-  group_by(___, ___) |>  # Fill in grouping variables
+  group_by(condition, block) |>  # Fill in grouping variables
   summarise(
-    prop_correct = mean(___),  # Fill in column name
+    prop_correct = mean(acc),  # Fill in column name
     trials = n(), 
     .groups = "drop"
   )
@@ -216,8 +216,8 @@ acc_by_cb <- acc2 |>
 # Complete this structure:
 acc_wide <- acc_by_cb |>
   pivot_wider(
-    names_from = ___,     # Fill in the column to become column names
-    values_from = ___     # Fill in the column to become values
+    names_from = condition,     # Fill in the column to become column names
+    values_from = prop_correct     # Fill in the column to become values
   )
 
 # View the results
@@ -228,6 +228,8 @@ print(acc_wide)
 ```
 
 Inline prompt: "Overall accuracy = `r NA`. Easy = `r NA`, Hard = `r NA`." Replace NA with inline code.
+
+Overall accuracy = `r round(mean(acc2$acc), 2)`. Easy = `r round(mean(acc2$acc[acc2$condition == "easy"]), 2)`, Hard = `r round(mean(acc2$acc[acc2$condition == "hard"]), 2)`.
 
 ## C. Reaction times (RT): shifted lognormal
 
